@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グランドクロス ＆ マジックアウト ツール</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #1c1c1e;
+            color: #f2f2f7;
+            text-align: center;
+            padding: 8px;
+            margin: 0;
+            touch-action: manipulation;
+        }
+        /* 全体を3カラムにするコンテナ */
+        .wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .column {
+            flex: 1;
+            background: #2c2c2e;
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-sizing: border-box;
+        }
+        h2 {
+            font-size: 14px;
+            margin: 0 0 8px 0;
+            color: #ff453a;
+        }
+        /* グランドクロスのブロック枠 */
+        .gc-block {
+            background: #3a3a3c;
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        .gc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            color: #ff9f0a;
+            gap: 10px;
+        }
+        .section {
+            background: #2c2c2e;
+            padding: 6px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            text-align: left;
+            transition: opacity 0.2s;
+        }
+        .label {
+            font-size: 11px;
+            font-weight: bold;
+            color: #0a84ff;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .label:hover {
+            color: #4da3ff;
+        }
+        
+        /* アイコンとボタン行のレイアウト構造 */
+        .row-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .debuff-icon {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 3px;
+            flex: 1;
+        }
+
+        /* 共通ボタン基本スタイル */
+        .touch-btn {
+            flex: 1;
+            padding: 5px 2px;
+            font-size: 10px;
+            font-weight: bold;
+            border: 2px solid #48484a;
+            border-radius: 6px;
+            background: #3a3a3c;
+            color: #aeaeb2;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 💡 グランドクロスのデバフ行専用の幅比率（早・遅を狭く、本当・嘘を広く） */
+        .debuff-row .btn-speed {
+            flex: 0.6;
+        }
+        .debuff-row .btn-truth {
+            flex: 1.4;
+        }
+
+        /* 親スイッチ用ボタン */
+        .gc-switch-btn {
+            flex: 1;
+            padding: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-true-master {
+            background: #2c2c2e;
+            border-color: #0a84ff;
+            color: #0a84ff;
+        }
+        .btn-true-master.active {
+            background: #0a84ff;
+            color: white;
+            border-color: #fff;
+        }
+        .btn-false-master {
+            background: #2c2c2e;
+            border-color: #ff453a;
+            color: #ff453a;
+        }
+        .btn-false-master.active {
+            background: #ff453a;
+            color: white;
+            border-color: #fff;
+        }
+
+        /* 選択されたときのカラー設定 */
+        .touch-btn.selected-true {
+            background: #0a84ff !important;
+            color: white !important;
+            border-color: #fff !important;
+        }
+        .touch-btn.selected-false {
+            background: #ff453a !important;
+            color: white !important;
+            border-color: #fff !important;
+        }
+        .touch-btn.selected-early {
+            background: #ff9f0a !important;
+            color: white !important;
+            border-color: #fff !important;
+        }
+        .touch-btn.selected-late {
+            background: #af52de !important;
+            color: white !important;
+            border-color: #fff !important;
+        }
+
+        /* グレーアウトするスタイル */
+        .section.disabled-section {
+            opacity: 0.3;
+        }
+        .section.disabled-section .label {
+            pointer-events: auto; 
+        }
+        .section.disabled-section .row-container {
+            pointer-events: none;
+        }
+
+        .disable-badge {
+            font-size: 9px;
+            background: #48484a;
+            color: #fff;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+
+        /* ほのお・つなみ用結果表示 */
+        .effect-result {
+            font-size: 10px;
+            font-weight: normal;
+            color: #ff9f0a;
+            background: #1c1c1e;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        #result-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: #1c1c1e;
+            border-radius: 10px;
+            border: 2px solid #0a84ff;
+        }
+        .result-title {
+            font-size: 11px;
+            color: #aeaeb2;
+            margin-bottom: 3px;
+        }
+        .result-val {
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .reset-btn {
+            width: 100%;
+            background: #636366;
+            color: white;
+            border: none;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- 【左カラム】グランドクロス 1回目 -->
+    <div class="column">
+        <h2>グランドクロス 1回目</h2>
+        <div style="font-size: 10px; color: #8e8e93; margin-bottom: 6px;">※項目名タップで無効(対象外)切替</div>
+        
+        <div class="gc-block">
+            <div class="gc-header">
+                <span>デバフ一括選択</span>
+                <div class="btn-group" style="flex: 1;">
+                    <button class="gc-switch-btn btn-true-master" onclick="setGroup('gc1', 'true', this)">本当</button>
+                    <button class="gc-switch-btn btn-false-master" onclick="setGroup('gc1', 'false', this)">嘘</button>
+                </div>
+            </div>
+
+            <!-- 呪詛 -->
+            <div class="section debuff-row" data-group="gc1">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>呪詛</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="juso.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:見ない</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:見る</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加速度爆弾 -->
+            <div class="section debuff-row" data-group="gc1">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>加速度爆弾</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="acceleration.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:止まる</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:動く</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- フォークライトニング -->
+            <div class="section debuff-row" data-group="gc1">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>フォークライトニング</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="fork.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:1人</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:頭割り</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 水圧縮 -->
+            <div class="section debuff-row" data-group="gc1" style="margin-bottom: 0;">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>水圧縮</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="water.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:頭割り</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:1人</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ほのお判定ブロック -->
+        <div class="section" style="background: #3a3a3c; margin-bottom: 0;">
+            <div class="label" onclick="toggleDisable(this)">
+                <span>🔥 ほのお</span>
+                <span id="fire-res" class="effect-result">未選択</span>
+            </div>
+            <div class="row-container">
+                <img src="fire.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                <div class="btn-group">
+                    <button class="touch-btn" onclick="selectEffect('fire', 'true', this)">本当</button>
+                    <button class="touch-btn" onclick="selectEffect('fire', 'false', this)">嘘</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 【真ん中カラム】グランドクロス 2回目 -->
+    <div class="column">
+        <h2>グランドクロス 2回目</h2>
+        <div style="font-size: 10px; color: #8e8e93; margin-bottom: 6px;">※項目名タップで無効(対象外)切替</div>
+
+        <div class="gc-block">
+            <div class="gc-header">
+                <span>デバフ一括選択</span>
+                <div class="btn-group" style="flex: 1;">
+                    <button class="gc-switch-btn btn-true-master" onclick="setGroup('gc2', 'true', this)">本当</button>
+                    <button class="gc-switch-btn btn-false-master" onclick="setGroup('gc2', 'false', this)">嘘</button>
+                </div>
+            </div>
+
+            <!-- 呪詛 -->
+            <div class="section debuff-row" data-group="gc2">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>呪詛</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="juso.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:見ない</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:見る</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加速度爆弾 -->
+            <div class="section debuff-row" data-group="gc2">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>加速度爆弾</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="acceleration.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:止まる</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:動く</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- フォークライトニング -->
+            <div class="section debuff-row" data-group="gc2">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>フォークライトニング</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="fork.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:1人</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:頭割り</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 水圧縮 -->
+            <div class="section debuff-row" data-group="gc2" style="margin-bottom: 0;">
+                <div class="label" onclick="toggleDisable(this)">
+                    <span>水圧縮</span>
+                    <span class="disable-badge">付与</span>
+                </div>
+                <div class="row-container">
+                    <img src="water.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                    <div class="btn-group">
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
+                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:頭割り</button>
+                        <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:1人</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- つなみ判定ブロック -->
+        <div class="section" style="background: #3a3a3c; margin-bottom: 0;">
+            <div class="label" onclick="toggleDisable(this)">
+                <span>🌊 つなみ</span>
+                <span id="water-res" class="effect-result">未選択</span>
+            </div>
+            <div class="row-container">
+                <img src="tsunami.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
+                <div class="btn-group">
+                    <button class="touch-btn" onclick="selectEffect('water', 'true', this)">本当</button>
+                    <button class="touch-btn" onclick="selectEffect('water', 'false', this)">嘘</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 【右カラム】マジックアウト判定 -->
+    <div class="column">
+        <h2>マジックアウト判定</h2>
+        <div style="font-size: 11px; color: #30d158; margin-bottom: 6px; font-weight: bold; text-align: left;">▼ 判定入力</div>
+
+        <div class="section">
+            <div class="label" style="cursor: default;">1回目サンダガ</div>
+            <div class="btn-group">
+                <button class="touch-btn" onclick="selectMagicVal('t1', 'shin', this)">本当</button>
+                <button class="touch-btn" onclick="selectMagicVal('t1', 'uso', this)">嘘</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="label" style="cursor: default;">2回目ブリザガ</div>
+            <div class="btn-group">
+                <button class="touch-btn" onclick="selectMagicVal('t2', 'shin', this)">本当</button>
+                <button class="touch-btn" onclick="selectMagicVal('t2', 'uso', this)">嘘</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="label" style="cursor: default;">マジックチャージ 上段 (サンダガ)</div>
+            <div class="btn-group">
+                <button class="touch-btn" onclick="selectMagicVal('mc_top', 'shin', this)">本当</button>
+                <button class="touch-btn" onclick="selectMagicVal('mc_top', 'uso', this)">嘘</button>
+            </div>
+        </div>
+
+        <div class="section" style="margin-bottom: 8px;">
+            <div class="label" style="cursor: default;">マジックチャージ 下段 (ブリザガ)</div>
+            <div class="btn-group">
+                <button class="touch-btn" onclick="selectMagicVal('mc_bottom', 'shin', this)">本当</button>
+                <button class="touch-btn" onclick="selectMagicVal('mc_bottom', 'uso', this)">嘘</button>
+            </div>
+        </div>
+
+        <!-- 結果表示エリア -->
+        <div id="result-box">
+            <div class="result-title">【 判定結果 】</div>
+            <div id="res-main" class="result-val" style="color: #aeaeb2;">未選択</div>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">全リセット</button>
+    </div>
+</div>
+
+<script>
+    // 各デバフ行のタイトルをタップするとグレーアウト（無効）と通常がトグルで切り替わる
+    function toggleDisable(labelElem) {
+        const section = labelElem.closest('.section');
+        section.classList.toggle('disabled-section');
+        const badge = labelElem.querySelector('.disable-badge');
+        if (badge) {
+            if (section.classList.contains('disabled-section')) {
+                badge.innerText = "対象外";
+                badge.style.background = "#2c2c2e";
+                badge.style.color = "#636366";
+            } else {
+                badge.innerText = "付与";
+                badge.style.background = "#48484a";
+                badge.style.color = "#fff";
+            }
+        }
+    }
+
+    // 早・遅ボタンの選択切替（早と遅は排他選択：早はオレンジ、遅はパープル）
+    function selectSpeed(btnElement, speedType) {
+        const parentGroup = btnElement.parentElement;
+        const speedBtns = parentGroup.querySelectorAll('.btn-speed');
+        speedBtns.forEach(b => b.classList.remove('selected-early', 'selected-late'));
+        
+        if (speedType === 'early') {
+            btnElement.classList.add('selected-early');
+        } else {
+            btnElement.classList.add('selected-late');
+        }
+    }
+
+    // グランドクロス1回目 / 2回目の親スイッチ一括選択（本当/嘘ボタンの一括制御）
+    function setGroup(groupName, type, btnElement) {
+        const parentBlock = btnElement.closest('.column');
+        if (!parentBlock) return;
+        const masterBtns = parentBlock.querySelectorAll('.gc-switch-btn');
+        masterBtns.forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        // 無効化（グレーアウト）されていないセクションだけを一括選択の対象にする
+        const sections = parentBlock.querySelectorAll('.section[data-group="' + groupName + '"]:not(.disabled-section)');
+        sections.forEach(sec => {
+            const btns = sec.querySelectorAll('.touch-btn');
+            btns.forEach(b => {
+                if (b.innerText.startsWith('本当') || b.innerText.startsWith('嘘')) {
+                    b.classList.remove('selected-true', 'selected-false');
+                    if (type === 'true' && b.innerText.includes('本当')) {
+                        b.classList.add('selected-true');
+                    } else if (type === 'false' && b.innerText.includes('嘘')) {
+                        b.classList.add('selected-false');
+                    }
+                }
+            });
+        });
+    }
+
+    // 個別の真偽項目をタップしたとき
+    function selectItem(btnElement, type) {
+        const parentGroup = btnElement.parentElement;
+        if (!parentGroup) return;
+        const buttons = parentGroup.querySelectorAll('.btn-truth');
+        buttons.forEach(btn => {
+            btn.classList.remove('selected-true', 'selected-false');
+        });
+        if (type === 'true') {
+            btnElement.classList.add('selected-true');
+        } else {
+            btnElement.classList.add('selected-false');
+        }
+    }
+
+    // ほのお・つなみ判定
+    function selectEffect(effectType, val, btnElement) {
+        const parentGroup = btnElement.parentElement;
+        if (!parentGroup) return;
+        const buttons = parentGroup.getElementsByClassName('touch-btn');
+        for(let btn of buttons) {
+            btn.classList.remove('selected-true', 'selected-false');
+        }
+        if (val === 'true') {
+            btnElement.classList.add('selected-true');
+        } else {
+            btnElement.classList.add('selected-false');
+        }
+
+        if (effectType === 'fire') {
+            const resElem = document.getElementById('fire-res');
+            if (val === 'true') {
+                resElem.innerText = "本当：タケノコ";
+                resElem.style.color = "#0a84ff";
+            } else {
+                resElem.innerText = "嘘：ドーナツ";
+                resElem.style.color = "#ff453a";
+            }
+        } else if (effectType === 'water') {
+            const resElem = document.getElementById('water-res');
+            if (val === 'true') {
+                resElem.innerText = "本当：ドーナツ";
+                resElem.style.color = "#0a84ff";
+            } else {
+                resElem.innerText = "嘘：タケノコ";
+                resElem.style.color = "#ff453a";
+            }
+        }
+    }
+
+    // マジックアウト判定用ロジック
+    let state = { t1: null, t2: null, mc_top: null, mc_bottom: null };
+
+    function selectMagicVal(targetKey, value, btnElement) {
+        const parentDiv = btnElement.parentElement;
+        parentDiv.querySelectorAll('.touch-btn').forEach(b => b.classList.remove('selected-true', 'selected-false'));
+        
+        if (value === 'shin') {
+            btnElement.classList.add('selected-true');
+            state[targetKey] = 'shin';
+        } else {
+            btnElement.classList.add('selected-false');
+            state[targetKey] = 'uso';
+        }
+        calculate();
+    }
+
+    function calculate() {
+        if (!state.t1 || !state.t2 || !state.mc_top || !state.mc_bottom) return;
+
+        let thunderSafe = (state.t1 === state.mc_top);
+        let blizzardSafe = (state.t2 === state.mc_bottom);
+
+        let resultText = "";
+        let resultColor = "";
+
+        if (thunderSafe && blizzardSafe) {
+            resultText = "🛡️ 両方踏まない";
+            resultColor = "#30d158";
+        } else if (!thunderSafe && !blizzardSafe) {
+            resultText = "⚠️ 両方踏む！";
+            resultColor = "#ff453a";
+        } else if (!thunderSafe && blizzardSafe) {
+            resultText = "⚡ 直線だけ踏む";
+            resultColor = "#ff9f0a";
+        } else if (thunderSafe && !blizzardSafe) {
+            resultText = "❄️ 扇だけ踏む";
+            resultColor = "#0a84ff";
+        }
+
+        const mainElem = document.getElementById('res-main');
+        mainElem.innerText = resultText;
+        mainElem.style.color = resultColor;
+    }
+
+    function resetAll() {
+        state = { t1: null, t2: null, mc_top: null, mc_bottom: null };
+        const allBtns = document.querySelectorAll('.touch-btn');
+        allBtns.forEach(b => b.classList.remove('selected-true', 'selected-false', 'selected-early', 'selected-late'));
+        const masterBtns = document.querySelectorAll('.gc-switch-btn');
+        masterBtns.forEach(b => b.classList.remove('active'));
+
+        // グレーアウト状態もすべてリセット
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(sec => {
+            sec.classList.remove('disabled-section');
+            const badge = sec.querySelector('.disable-badge');
+            if (badge) {
+                badge.innerText = "付与";
+                badge.style.background = "#48484a";
+                badge.style.color = "#fff";
+            }
+        });
+
+        const mainElem = document.getElementById('res-main');
+        mainElem.innerText = "未選択";
+        mainElem.style.color = "#aeaeb2";
+
+        document.getElementById('fire-res').innerText = "未選択";
+        document.getElementById('fire-res').style.color = "#ff9f0a";
+        document.getElementById('water-res').innerText = "未選択";
+        document.getElementById('water-res').style.color = "#ff9f0a";
+    }
+</script>
+
+</body>
+</html>
