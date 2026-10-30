@@ -10,62 +10,67 @@
             background-color: #1c1c1e;
             color: #f2f2f7;
             text-align: center;
-            padding: 8px;
+            padding: 4px;
             margin: 0;
             touch-action: manipulation;
         }
-        /* 全体を3カラムにするコンテナ */
+        /* 11インチiPad横向きに最適化した全体コンテナ */
         .wrapper {
-            max-width: 1250px;
+            max-width: 100%;
+            width: 100%;
             margin: 0 auto;
             display: flex;
-            gap: 10px;
+            gap: 6px;
             align-items: flex-start;
+            box-sizing: border-box;
+            padding: 0 2px;
         }
         .column {
             flex: 1;
             background: #2c2c2e;
-            padding: 10px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
             box-sizing: border-box;
+            min-width: 0;
         }
         h2 {
-            font-size: 14px;
-            margin: 0 0 8px 0;
+            font-size: 13px;
+            margin: 0 0 4px 0;
             color: #ff453a;
+            white-space: nowrap;
         }
         /* グランドクロスのブロック枠 */
         .gc-block {
             background: #3a3a3c;
-            padding: 8px;
-            border-radius: 10px;
-            margin-bottom: 8px;
+            padding: 6px;
+            border-radius: 8px;
+            margin-bottom: 6px;
             text-align: left;
         }
         .gc-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             color: #ff9f0a;
-            gap: 10px;
+            gap: 6px;
         }
         .section {
             background: #2c2c2e;
-            padding: 6px;
+            padding: 5px;
             border-radius: 6px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             text-align: left;
             transition: opacity 0.2s;
         }
         .label {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: bold;
             color: #0a84ff;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -79,49 +84,57 @@
         .row-container {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         .debuff-icon {
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             object-fit: contain;
             border-radius: 4px;
             flex-shrink: 0;
         }
         .btn-group {
             display: flex;
-            gap: 3px;
+            gap: 2px;
             flex: 1;
+            min-width: 0;
         }
 
         /* 共通ボタン基本スタイル */
         .touch-btn {
             flex: 1;
-            padding: 5px 2px;
-            font-size: 10px;
+            padding: 4px 1px;
+            font-size: 9.5px;
             font-weight: bold;
-            border: 2px solid #48484a;
-            border-radius: 6px;
+            border: 1.5px solid #48484a;
+            border-radius: 5px;
             background: #3a3a3c;
             color: #aeaeb2;
             cursor: pointer;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* 💡 グランドクロスのデバフ行専用の幅比率（早・遅を狭く、本当・嘘を広く） */
+        /* グランドクロスのデバフ行専用の幅比率 */
         .debuff-row .btn-speed {
-            flex: 0.6;
+            flex: 0.55;
+            font-size: 9px;
         }
         .debuff-row .btn-truth {
-            flex: 1.4;
+            flex: 1.45;
+            font-size: 9px;
+            padding-left: 1px;
+            padding-right: 1px;
         }
 
         /* 親スイッチ用ボタン */
         .gc-switch-btn {
             flex: 1;
-            padding: 4px;
-            font-size: 11px;
+            padding: 3px;
+            font-size: 10px;
             font-weight: bold;
             border: 2px solid transparent;
             border-radius: 4px;
@@ -184,17 +197,17 @@
         }
 
         .disable-badge {
-            font-size: 9px;
+            font-size: 8.5px;
             background: #48484a;
             color: #fff;
-            padding: 1px 4px;
-            border-radius: 4px;
+            padding: 1px 3px;
+            border-radius: 3px;
             font-weight: normal;
         }
 
         /* ほのお・つなみ用結果表示 */
         .effect-result {
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: normal;
             color: #ff9f0a;
             background: #1c1c1e;
@@ -203,19 +216,19 @@
         }
 
         #result-box {
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 6px;
+            padding: 6px;
             background: #1c1c1e;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 2px solid #0a84ff;
         }
         .result-title {
-            font-size: 11px;
+            font-size: 10px;
             color: #aeaeb2;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
         .result-val {
-            font-size: 15px;
+            font-size: 13px;
             font-weight: bold;
         }
         .reset-btn {
@@ -223,11 +236,11 @@
             background: #636366;
             color: white;
             border: none;
-            padding: 8px;
-            font-size: 12px;
+            padding: 6px;
+            font-size: 11px;
             font-weight: bold;
-            border-radius: 8px;
-            margin-top: 8px;
+            border-radius: 6px;
+            margin-top: 6px;
             cursor: pointer;
             user-select: none;
         }
@@ -239,7 +252,7 @@
     <!-- 【左カラム】グランドクロス 1回目 -->
     <div class="column">
         <h2>グランドクロス 1回目</h2>
-        <div style="font-size: 10px; color: #8e8e93; margin-bottom: 6px;">※項目名タップで無効(対象外)切替</div>
+        <div style="font-size: 9px; color: #8e8e93; margin-bottom: 4px;">※項目名タップで無効(対象外)切替</div>
         
         <div class="gc-block">
             <div class="gc-header">
@@ -293,8 +306,8 @@
                 <div class="row-container">
                     <img src="fork.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
                     <div class="btn-group">
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-speed" id="fork1-early" onclick="handleWaterLightning1('early')">早</button>
+                        <button class="touch-btn btn-speed" id="fork1-late" onclick="handleWaterLightning1('late')">遅</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:1人</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:頭割り</button>
                     </div>
@@ -310,8 +323,8 @@
                 <div class="row-container">
                     <img src="water.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
                     <div class="btn-group">
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-speed" id="water1-early" onclick="handleWaterLightning1('early')">早</button>
+                        <button class="touch-btn btn-speed" id="water1-late" onclick="handleWaterLightning1('late')">遅</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:頭割り</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:1人</button>
                     </div>
@@ -338,7 +351,7 @@
     <!-- 【真ん中カラム】グランドクロス 2回目 -->
     <div class="column">
         <h2>グランドクロス 2回目</h2>
-        <div style="font-size: 10px; color: #8e8e93; margin-bottom: 6px;">※項目名タップで無効(対象外)切替</div>
+        <div style="font-size: 9px; color: #8e8e93; margin-bottom: 4px;">※項目名タップで無効(対象外)切替</div>
 
         <div class="gc-block">
             <div class="gc-header">
@@ -392,8 +405,8 @@
                 <div class="row-container">
                     <img src="fork.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
                     <div class="btn-group">
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-speed" id="fork2-early" onclick="handleWaterLightning2('early')">早</button>
+                        <button class="touch-btn btn-speed" id="fork2-late" onclick="handleWaterLightning2('late')">遅</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:1人</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:頭割り</button>
                     </div>
@@ -409,8 +422,8 @@
                 <div class="row-container">
                     <img src="water.png" alt="" class="debuff-icon" onerror="this.style.display='none'">
                     <div class="btn-group">
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'early')">早</button>
-                        <button class="touch-btn btn-speed" onclick="selectSpeed(this, 'late')">遅</button>
+                        <button class="touch-btn btn-speed" id="water2-early" onclick="handleWaterLightning2('early')">早</button>
+                        <button class="touch-btn btn-speed" id="water2-late" onclick="handleWaterLightning2('late')">遅</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'true')">本当:頭割り</button>
                         <button class="touch-btn btn-truth" onclick="selectItem(this, 'false')">嘘:1人</button>
                     </div>
@@ -437,37 +450,37 @@
     <!-- 【右カラム】マジックアウト判定 -->
     <div class="column">
         <h2>マジックアウト判定</h2>
-        <div style="font-size: 11px; color: #30d158; margin-bottom: 6px; font-weight: bold; text-align: left;">▼ 判定入力</div>
+        <div style="font-size: 10px; color: #30d158; margin-bottom: 4px; font-weight: bold; text-align: left;">▼ 判定入力</div>
 
         <div class="section">
-            <div class="label" style="cursor: default;">1回目サンダガ</div>
+            <div class="label" style="cursor: default;">1回目雷 (サンダガ)</div>
             <div class="btn-group">
-                <button class="touch-btn" onclick="selectMagicVal('t1', 'shin', this)">本当</button>
-                <button class="touch-btn" onclick="selectMagicVal('t1', 'uso', this)">嘘</button>
+                <button class="touch-btn" onclick="selectMagicVal('t1', 'shin', this)">真</button>
+                <button class="touch-btn" onclick="selectMagicVal('t1', 'uso', this)">偽</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="label" style="cursor: default;">2回目ブリザガ</div>
+            <div class="label" style="cursor: default;">2回目氷 (ブリザガ)</div>
             <div class="btn-group">
-                <button class="touch-btn" onclick="selectMagicVal('t2', 'shin', this)">本当</button>
-                <button class="touch-btn" onclick="selectMagicVal('t2', 'uso', this)">嘘</button>
+                <button class="touch-btn" onclick="selectMagicVal('t2', 'shin', this)">真</button>
+                <button class="touch-btn" onclick="selectMagicVal('t2', 'uso', this)">偽</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="label" style="cursor: default;">マジックチャージ 上段 (サンダガ)</div>
+            <div class="label" style="cursor: default;">マジックチャージ 上段 (雷系)</div>
             <div class="btn-group">
-                <button class="touch-btn" onclick="selectMagicVal('mc_top', 'shin', this)">本当</button>
-                <button class="touch-btn" onclick="selectMagicVal('mc_top', 'uso', this)">嘘</button>
+                <button class="touch-btn" onclick="selectMagicVal('mc_top', 'shin', this)">真</button>
+                <button class="touch-btn" onclick="selectMagicVal('mc_top', 'uso', this)">偽</button>
             </div>
         </div>
 
-        <div class="section" style="margin-bottom: 8px;">
-            <div class="label" style="cursor: default;">マジックチャージ 下段 (ブリザガ)</div>
+        <div class="section" style="margin-bottom: 6px;">
+            <div class="label" style="cursor: default;">マジックチャージ 下段 (氷系)</div>
             <div class="btn-group">
-                <button class="touch-btn" onclick="selectMagicVal('mc_bottom', 'shin', this)">本当</button>
-                <button class="touch-btn" onclick="selectMagicVal('mc_bottom', 'uso', this)">嘘</button>
+                <button class="touch-btn" onclick="selectMagicVal('mc_bottom', 'shin', this)">真</button>
+                <button class="touch-btn" onclick="selectMagicVal('mc_bottom', 'uso', this)">偽</button>
             </div>
         </div>
 
@@ -482,7 +495,6 @@
 </div>
 
 <script>
-    // 各デバフ行のタイトルをタップするとグレーアウト（無効）と通常がトグルで切り替わる
     function toggleDisable(labelElem) {
         const section = labelElem.closest('.section');
         section.classList.toggle('disabled-section');
@@ -500,7 +512,6 @@
         }
     }
 
-    // 早・遅ボタンの選択切替（早と遅は排他選択：早はオレンジ、遅はパープル）
     function selectSpeed(btnElement, speedType) {
         const parentGroup = btnElement.parentElement;
         const speedBtns = parentGroup.querySelectorAll('.btn-speed');
@@ -513,7 +524,50 @@
         }
     }
 
-    // グランドクロス1回目 / 2回目の親スイッチ一括選択（本当/嘘ボタンの一括制御）
+    // 💡 1回目の水・雷をセットで完全自動連動（1回目ペア ＆ 2回目反転ペアを一発設定）
+    function handleWaterLightning1(speedType) {
+        const oppositeSpeed = (speedType === 'early') ? 'late' : 'early';
+
+        // 1回目：水圧縮・フォークライトニング両方を同じにする
+        const w1e = document.getElementById('water1-early');
+        const w1l = document.getElementById('water1-late');
+        const f1e = document.getElementById('fork1-early');
+        const f1l = document.getElementById('fork1-late');
+
+        [w1e, f1e].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(speedType==='early') b.classList.add('selected-early'); });
+        [w1l, f1l].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(speedType==='late') b.classList.add('selected-late'); });
+
+        // 2回目：水圧縮・フォークライトニング両方を逆（反対側）にする
+        const w2e = document.getElementById('water2-early');
+        const w2l = document.getElementById('water2-late');
+        const f2e = document.getElementById('fork2-early');
+        const f2l = document.getElementById('fork2-late');
+
+        [w2e, f2e].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(oppositeSpeed==='early') b.classList.add('selected-early'); });
+        [w2l, f2l].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(oppositeSpeed==='late') b.classList.add('selected-late'); });
+    }
+
+    // 2回目を直接触った場合も対称に連動させる
+    function handleWaterLightning2(speedType) {
+        const oppositeSpeed = (speedType === 'early') ? 'late' : 'early';
+
+        const w2e = document.getElementById('water2-early');
+        const w2l = document.getElementById('water2-late');
+        const f2e = document.getElementById('fork2-early');
+        const f2l = document.getElementById('fork2-late');
+
+        [w2e, f2e].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(speedType==='early') b.classList.add('selected-early'); });
+        [w2l, f2l].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(speedType==='late') b.classList.add('selected-late'); });
+
+        const w1e = document.getElementById('water1-early');
+        const w1l = document.getElementById('water1-late');
+        const f1e = document.getElementById('fork1-early');
+        const f1l = document.getElementById('fork1-late');
+
+        [w1e, f1e].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(oppositeSpeed==='early') b.classList.add('selected-early'); });
+        [w1l, f1l].forEach(b => { b.classList.remove('selected-early', 'selected-late'); if(oppositeSpeed==='late') b.classList.add('selected-late'); });
+    }
+
     function setGroup(groupName, type, btnElement) {
         const parentBlock = btnElement.closest('.column');
         if (!parentBlock) return;
@@ -521,9 +575,11 @@
         masterBtns.forEach(b => b.classList.remove('active'));
         btnElement.classList.add('active');
 
-        // 無効化（グレーアウト）されていないセクションだけを一括選択の対象にする
         const sections = parentBlock.querySelectorAll('.section[data-group="' + groupName + '"]:not(.disabled-section)');
         sections.forEach(sec => {
+            const rowLabel = sec.querySelector('.label span');
+            const isJuso = rowLabel && rowLabel.innerText.includes('呪詛');
+
             const btns = sec.querySelectorAll('.touch-btn');
             btns.forEach(b => {
                 if (b.innerText.startsWith('本当') || b.innerText.startsWith('嘘')) {
@@ -534,11 +590,19 @@
                         b.classList.add('selected-false');
                     }
                 }
+
+                if (isJuso && b.classList.contains('btn-speed')) {
+                    b.classList.remove('selected-early', 'selected-late');
+                    if (groupName === 'gc1' && b.innerText === '早') {
+                        b.classList.add('selected-early');
+                    } else if (groupName === 'gc2' && b.innerText === '遅') {
+                        b.classList.add('selected-late');
+                    }
+                }
             });
         });
     }
 
-    // 個別の真偽項目をタップしたとき
     function selectItem(btnElement, type) {
         const parentGroup = btnElement.parentElement;
         if (!parentGroup) return;
@@ -553,7 +617,6 @@
         }
     }
 
-    // ほのお・つなみ判定
     function selectEffect(effectType, val, btnElement) {
         const parentGroup = btnElement.parentElement;
         if (!parentGroup) return;
@@ -582,13 +645,12 @@
                 resElem.innerText = "本当：ドーナツ";
                 resElem.style.color = "#0a84ff";
             } else {
-                resElem.innerText = "嘘：タケノコ";
+                resElem.innerText = "嘘：たけのこ";
                 resElem.style.color = "#ff453a";
             }
         }
     }
 
-    // マジックアウト判定用ロジック
     let state = { t1: null, t2: null, mc_top: null, mc_bottom: null };
 
     function selectMagicVal(targetKey, value, btnElement) {
@@ -621,10 +683,10 @@
             resultText = "⚠️ 両方踏む！";
             resultColor = "#ff453a";
         } else if (!thunderSafe && blizzardSafe) {
-            resultText = "⚡ 直線だけ踏む";
+            resultText = "⚡ サンダガを踏む";
             resultColor = "#ff9f0a";
         } else if (thunderSafe && !blizzardSafe) {
-            resultText = "❄️ 扇だけ踏む";
+            resultText = "❄️ ブリザガを踏む";
             resultColor = "#0a84ff";
         }
 
@@ -640,7 +702,6 @@
         const masterBtns = document.querySelectorAll('.gc-switch-btn');
         masterBtns.forEach(b => b.classList.remove('active'));
 
-        // グレーアウト状態もすべてリセット
         const sections = document.querySelectorAll('.section');
         sections.forEach(sec => {
             sec.classList.remove('disabled-section');
